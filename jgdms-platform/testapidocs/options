@@ -22,13 +22,13 @@
 -link
 'http://java.sun.com/j2se/1.6.0/docs/api'
 -link
-'https://hudson.apache.org/hudson/view/River/job/River-trunk/javadoc/api/index.html'
--link
 '../apidocs'
+-link
+'https://bhamail.github.io/JGDMS/jgdms-collections/apidocs'
 -linkoffline
 'http://docs.oracle.com/javase/1.5.0/docs/api' '/Users/bhamail/javadev/github/bhamail/JGDMS/JGDMS/jgdms-platform/target/javadoc-bundle-options'
 -linkoffline
-'http://river.apache.org/apidocs' '/Users/bhamail/javadev/github/bhamail/JGDMS/JGDMS/jgdms-collections/target/site/testapidocs'
+'https://bhamail.github.io/JGDMS/jgdms-collections/apidocs' '/Users/bhamail/javadev/github/bhamail/JGDMS/JGDMS/jgdms-collections/target/site/testapidocs'
 -top
 '<h2>JGDMS Project 3.0-SNAPSHOT API Documentation</h2>'
 -use
