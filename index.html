@@ -29,7 +29,7 @@
         <ul class="breadcrumb">
         <li id="publishDate">Last Published: 2018-12-21<span class="divider">|</span>
 </li>
-          <li id="projectVersion">Version: 3.0.1-RC-07</li>
+          <li id="projectVersion">Version: 3.0-SNAPSHOT</li>
         </ul>
       </div>
       <div class="row-fluid">
@@ -156,7 +156,22 @@ What is the new development version for &quot;JGDMS Project&quot;? (au.net.zeus:
 <li>
 
 <p>Perform the release:</p>
-<p>In my case, I needed to export the following in my shell in order for gpg to work correctly:</p>
+<p>One-time setup is required for you to publish to Central. Be sure the following exists in your <tt>~/.m2/settings.xml</tt> file. Your OSSRH Jira ID and passwrod are needed. See <a class="externalLink" href="https://central.sonatype.org/pages/ossrh-guide.html">OSSRH Guide</a> for details</p>
+
+<div>
+<div>
+<pre class="source">...
+&lt;servers&gt;
+    &lt;server&gt;
+        &lt;id&gt;ossrh&lt;/id&gt;
+        &lt;username&gt;YOUR_OSSRH_JIRA_ID&lt;/username&gt;
+        &lt;password&gt;YOUR_YOUR_OSSRH_JIRA_PASSWORD&lt;/password&gt;
+    &lt;/server&gt;
+    ...
+&lt;/servers&gt;
+</pre></div></div>
+
+<p>In my case, I also needed to export the following in my shell in order for gpg to work correctly:</p>
 
 <div>
 <div>
@@ -175,6 +190,18 @@ What is the new development version for &quot;JGDMS Project&quot;? (au.net.zeus:
 <div>
 <div>
 <pre class="source">mvn release:rollback
+</pre></div></div>
+</li>
+<li>
+
+<p>(temporary) Manually publish the docs:</p>
+<p>Eventually, this step should become obsolete, and the docs would be published during the prior &#x201c;release:perform&#x201d; step. For now though, we need to jump through some additional hoops to publish the docs to the github gh-pages site. See: &#x201c;Doc Publishing&#x201d; in <a href="docdocs.html">Documentation Documentation</a></p>
+<p>The idea is to checkout the just released &#x201c;tag&#x201d;, and run:</p>
+
+<div>
+<div>
+<pre class="source">mvn site site:stage
+mvn scm-publish:publish-scm
 </pre></div></div>
 </li>
 </ol></div>
