@@ -17,22 +17,14 @@
  */
 package org.apache.river.outrigger.proxy;
 
-import net.jini.core.entry.Entry;
-import net.jini.core.entry.UnusableEntryException;
-import net.jini.id.Uuid;
-import net.jini.id.UuidFactory;
-import net.jini.io.MarshalledInstance;
-import net.jini.space.JavaSpace;
-import org.apache.river.api.io.AtomicSerial;
-import org.apache.river.api.io.AtomicSerial.GetArg;
-import org.apache.river.api.io.AtomicSerial.ReadInput;
-import org.apache.river.api.io.AtomicSerial.ReadObject;
-import org.apache.river.landlord.LeasedResource;
-import org.apache.river.logging.Levels;
-import org.apache.river.proxy.CodebaseProvider;
-import org.apache.river.proxy.MarshalledWrapper;
-
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InvalidObjectException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -47,6 +39,21 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.WeakHashMap;
 import java.util.logging.Logger;
+
+import net.jini.core.entry.Entry;
+import net.jini.core.entry.UnusableEntryException;
+import net.jini.id.Uuid;
+import net.jini.id.UuidFactory;
+import net.jini.io.MarshalledInstance;
+import net.jini.space.JavaSpace;
+import org.apache.river.api.io.AtomicSerial;
+import org.apache.river.api.io.AtomicSerial.GetArg;
+import org.apache.river.api.io.AtomicSerial.ReadInput;
+import org.apache.river.api.io.AtomicSerial.ReadObject;
+import org.apache.river.landlord.LeasedResource;
+import org.apache.river.logging.Levels;
+import org.apache.river.proxy.CodebaseProvider;
+import org.apache.river.proxy.MarshalledWrapper;
 
 /**
  * An <code>EntryRep</code> object contains a packaged
@@ -329,7 +336,7 @@ public class EntryRep implements StorableResource<EntryRep>, LeasedResource, Ser
     public EntryRep(Entry entry) throws MarshalException {
 	this(entry, true);
     }
-    private static boolean checkIntegrity(GetArg arg) throws IOException {
+    private static boolean checkIntegrity(GetArg arg) throws IOException, ClassNotFoundException {
 	MarshalledInstance[] values = (MarshalledInstance[]) arg.get("values", null);
 	if (values == null) throw new InvalidObjectException("null values");
 	String[] superclasses = (String[]) arg.get("superclasses", null); // class names of the superclasses
@@ -352,7 +359,7 @@ public class EntryRep implements StorableResource<EntryRep>, LeasedResource, Ser
 	return ((RO) arg.getReader()).integrity;
     }
 
-    private EntryRep(GetArg arg, boolean integrity) throws IOException {
+    private EntryRep(GetArg arg, boolean integrity) throws IOException, ClassNotFoundException {
 	values = (MarshalledInstance[]) arg.get("values", null);
 	superclasses = (String[]) arg.get("superclasses", null); // class names of the superclasses
 	hashes = (long[]) arg.get("hashes", null); // superclass hashes
@@ -363,7 +370,7 @@ public class EntryRep implements StorableResource<EntryRep>, LeasedResource, Ser
 	this.integrity = integrity;
     }
     
-    EntryRep(GetArg arg) throws IOException {
+    EntryRep(GetArg arg) throws IOException, ClassNotFoundException {
 	this(arg, checkIntegrity(arg));
     }
 

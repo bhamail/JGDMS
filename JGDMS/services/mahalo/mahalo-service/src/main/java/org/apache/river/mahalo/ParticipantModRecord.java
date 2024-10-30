@@ -17,13 +17,14 @@
  */
 package org.apache.river.mahalo;
 
-import org.apache.river.mahalo.log.CannotRecoverException;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.apache.river.api.io.AtomicSerial;
 import org.apache.river.api.io.AtomicSerial.GetArg;
+import org.apache.river.mahalo.log.CannotRecoverException;
 
 /**
  * A <code>LogRecord</code> which encapsulates a generic
@@ -54,7 +55,7 @@ class ParticipantModRecord implements TxnLogRecord {
 	this(check(part, result), part, result);
     }
     
-    ParticipantModRecord(GetArg arg) throws IOException {
+    ParticipantModRecord(GetArg arg) throws IOException, ClassNotFoundException {
 	this(check(arg),
 		(ParticipantHandle)arg.get("part", null),
 		arg.get("result", 0));
@@ -65,7 +66,7 @@ class ParticipantModRecord implements TxnLogRecord {
 	this.result = result;
     }
     
-    private static boolean check(GetArg arg) throws IOException {
+    private static boolean check(GetArg arg) throws IOException, ClassNotFoundException {
 	try {
 	    return check(arg.get("part", null), arg.get("result", 0));
 	} catch (IllegalArgumentException ex){

@@ -17,12 +17,12 @@
  */
 package org.apache.river.reggie.proxy;
 
-import org.apache.river.proxy.ConstrainableProxyUtil;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 import java.rmi.MarshalledObject;
+
 import net.jini.admin.Administrable;
 import net.jini.core.constraint.MethodConstraints;
 import net.jini.core.constraint.RemoteMethodControl;
@@ -37,6 +37,7 @@ import org.apache.river.api.io.AtomicSerial;
 import org.apache.river.api.io.AtomicSerial.GetArg;
 import org.apache.river.api.io.AtomicSerial.PutArg;
 import org.apache.river.api.io.AtomicSerial.SerialForm;
+import org.apache.river.proxy.ConstrainableProxyUtil;
 
 /**
  * RegistrarProxy subclass that supports constraints.
@@ -139,7 +140,7 @@ public final class ConstrainableRegistrarProxy
 	this(arg, check(arg));
     }
     
-    ConstrainableRegistrarProxy(GetArg arg, MethodConstraints constraints) throws IOException{
+    ConstrainableRegistrarProxy(GetArg arg, MethodConstraints constraints) throws IOException, ClassNotFoundException{
 	super(arg);
 	this.constraints = constraints;
     }

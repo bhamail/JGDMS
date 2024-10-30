@@ -17,12 +17,12 @@
  */
 package org.apache.river.reggie.proxy;
 
-import org.apache.river.proxy.ConstrainableProxyUtil;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
+
 import net.jini.core.constraint.MethodConstraints;
 import net.jini.core.constraint.RemoteMethodControl;
 import net.jini.core.lease.Lease;
@@ -35,6 +35,7 @@ import org.apache.river.api.io.AtomicSerial;
 import org.apache.river.api.io.AtomicSerial.GetArg;
 import org.apache.river.api.io.AtomicSerial.PutArg;
 import org.apache.river.api.io.AtomicSerial.SerialForm;
+import org.apache.river.proxy.ConstrainableProxyUtil;
 
 /**
  * EventLease subclass that supports constraints.
@@ -99,7 +100,7 @@ public final class ConstrainableEventLease
      * @return
      * @throws IOException 
      */
-    private static MethodConstraints check(GetArg arg) throws IOException{
+    private static MethodConstraints check(GetArg arg) throws IOException, ClassNotFoundException{
 	MethodConstraints constraints = (MethodConstraints) arg.get(CONSTRAINTS, null);
 	EventLease el = new EventLease(arg);
 	MethodConstraints proxyCon = null;
@@ -112,11 +113,11 @@ public final class ConstrainableEventLease
 	return constraints;
     }
     
-    ConstrainableEventLease(GetArg arg) throws IOException{
+    ConstrainableEventLease(GetArg arg) throws IOException, ClassNotFoundException{
 	this(arg, check(arg));
     }
     
-    ConstrainableEventLease(GetArg arg, MethodConstraints constraints) throws IOException{
+    ConstrainableEventLease(GetArg arg, MethodConstraints constraints) throws IOException, ClassNotFoundException{
 	super(arg);
 	this.constraints = constraints;
     }

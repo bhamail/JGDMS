@@ -17,10 +17,6 @@
  */
 package org.apache.river.norm;
 
-import org.apache.river.lease.BasicRenewalFailureEvent;
-import org.apache.river.logging.Levels;
-import org.apache.river.norm.event.EventFactory;
-import org.apache.river.proxy.ConstrainableProxyUtil;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -30,6 +26,7 @@ import java.rmi.UnmarshalException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import net.jini.core.constraint.RemoteMethodControl;
 import net.jini.core.event.RemoteEvent;
 import net.jini.core.lease.Lease;
@@ -42,6 +39,10 @@ import net.jini.security.ProxyPreparer;
 import org.apache.river.api.io.AtomicMarshalledInstance;
 import org.apache.river.api.io.AtomicSerial;
 import org.apache.river.api.io.AtomicSerial.GetArg;
+import org.apache.river.lease.BasicRenewalFailureEvent;
+import org.apache.river.logging.Levels;
+import org.apache.river.norm.event.EventFactory;
+import org.apache.river.proxy.ConstrainableProxyUtil;
 
 /**
  * Class that wraps client Leases.  Provides hooks for synchronization 
@@ -178,7 +179,7 @@ class ClientLeaseWrapper implements Lease, Serializable {
 	membershipExpiration = calcMembershipExpiration(membershipDuration, now);
     }
 
-    ClientLeaseWrapper(GetArg arg) throws IOException {
+    ClientLeaseWrapper(GetArg arg) throws IOException, ClassNotFoundException {
 	this((Throwable) arg.get("lastFailure", null),
 	    (MarshalledInstance) arg.get("marshalledClientLease", null),
 	    arg.get("clientLeaseExpiration", 0L),

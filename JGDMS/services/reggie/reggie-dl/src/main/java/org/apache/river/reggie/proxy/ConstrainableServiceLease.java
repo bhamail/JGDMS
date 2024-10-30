@@ -17,13 +17,13 @@
  */
 package org.apache.river.reggie.proxy;
 
-import org.apache.river.proxy.ConstrainableProxyUtil;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 import java.rmi.RemoteException;
+
 import net.jini.core.constraint.MethodConstraints;
 import net.jini.core.constraint.RemoteMethodControl;
 import net.jini.core.lease.Lease;
@@ -37,6 +37,7 @@ import net.jini.security.proxytrust.SingletonProxyTrustIterator;
 import org.apache.river.api.io.AtomicSerial;
 import org.apache.river.api.io.AtomicSerial.PutArg;
 import org.apache.river.api.io.AtomicSerial.SerialForm;
+import org.apache.river.proxy.ConstrainableProxyUtil;
 
 /**
  * ServiceLease subclass that supports constraints.
@@ -117,7 +118,7 @@ public final class ConstrainableServiceLease
 	this(arg, check(arg));
     }
     
-    ConstrainableServiceLease(AtomicSerial.GetArg arg, MethodConstraints constraints) throws IOException{
+    ConstrainableServiceLease(AtomicSerial.GetArg arg, MethodConstraints constraints) throws IOException, ClassNotFoundException{
 	super(arg);
 	this.constraints = constraints;
     }

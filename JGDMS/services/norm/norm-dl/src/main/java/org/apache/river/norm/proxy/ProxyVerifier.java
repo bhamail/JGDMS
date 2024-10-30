@@ -17,14 +17,12 @@
  */
 package org.apache.river.norm.proxy;
 
-import org.apache.river.landlord.ConstrainableLandlordLease;
-import org.apache.river.landlord.Landlord;
-import org.apache.river.landlord.LandlordProxyVerifier;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.rmi.RemoteException;
+
 import net.jini.core.constraint.MethodConstraints;
 import net.jini.core.constraint.RemoteMethodControl;
 import net.jini.id.Uuid;
@@ -32,6 +30,9 @@ import net.jini.security.TrustVerifier;
 import net.jini.security.proxytrust.TrustEquivalence;
 import org.apache.river.api.io.AtomicSerial;
 import org.apache.river.api.io.AtomicSerial.GetArg;
+import org.apache.river.landlord.ConstrainableLandlordLease;
+import org.apache.river.landlord.Landlord;
+import org.apache.river.landlord.LandlordProxyVerifier;
 
 /** Defines a trust verifier for the smart proxies of a Norm server. */
 @AtomicSerial
@@ -79,13 +80,13 @@ public final class ProxyVerifier implements Serializable, TrustVerifier {
 	return true;
     }
     
-    ProxyVerifier(GetArg arg) throws IOException {
+    ProxyVerifier(GetArg arg) throws IOException, ClassNotFoundException {
 	this((NormServer) arg.get("serverProxy", null),
 	    (Uuid) arg.get("serverUuid", null),
 	    check(arg));
     }
     
-    private static boolean check(GetArg arg) throws IOException {
+    private static boolean check(GetArg arg) throws IOException, ClassNotFoundException {
 	NormServer serverProxy = (NormServer) arg.get("serverProxy", null);
 	Uuid serverUuid = (Uuid) arg.get("serverUuid", null);
 	try {

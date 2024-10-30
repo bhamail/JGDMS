@@ -17,15 +17,13 @@
  */
 package org.apache.river.fiddler.proxy;
 
-import org.apache.river.admin.DestroyAdmin;
-import org.apache.river.proxy.ConstrainableProxyUtil;
-import org.apache.river.admin.FiddlerAdmin;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.rmi.RemoteException;
+
 import net.jini.admin.JoinAdmin;
 import net.jini.core.constraint.MethodConstraints;
 import net.jini.core.constraint.RemoteMethodControl;
@@ -36,8 +34,11 @@ import net.jini.id.ReferentUuids;
 import net.jini.id.Uuid;
 import net.jini.security.proxytrust.ProxyTrustIterator;
 import net.jini.security.proxytrust.SingletonProxyTrustIterator;
+import org.apache.river.admin.DestroyAdmin;
+import org.apache.river.admin.FiddlerAdmin;
 import org.apache.river.api.io.AtomicSerial;
 import org.apache.river.api.io.AtomicSerial.GetArg;
+import org.apache.river.proxy.ConstrainableProxyUtil;
 
 /**
  * This class is a proxy providing access to the methods of an implementation
@@ -114,7 +115,7 @@ public class FiddlerAdminProxy implements FiddlerAdmin, ReferentUuid, Serializab
      * @param arg
      * @throws IOException 
      */
-    FiddlerAdminProxy(GetArg arg) throws IOException {
+    FiddlerAdminProxy(GetArg arg) throws IOException, ClassNotFoundException {
 	this((Fiddler)arg.get("server", null), (Uuid) arg.get("proxyID", null));
     }
     
@@ -838,7 +839,7 @@ public class FiddlerAdminProxy implements FiddlerAdmin, ReferentUuid, Serializab
 	    this.methodConstraints = methodConstraints;
         }//end constructor
 
-	private static MethodConstraints check(GetArg arg) throws IOException {
+	private static MethodConstraints check(GetArg arg) throws IOException, ClassNotFoundException {
 	    FiddlerAdminProxy fap = new FiddlerAdminProxy(arg);
 	    MethodConstraints methodConstraints = (MethodConstraints) 
 		    arg.get("methodConstraints", null);
@@ -857,11 +858,11 @@ public class FiddlerAdminProxy implements FiddlerAdmin, ReferentUuid, Serializab
 	    return methodConstraints;
 	}	
 	
-	ConstrainableFiddlerAdminProxy(GetArg arg) throws IOException {
+	ConstrainableFiddlerAdminProxy(GetArg arg) throws IOException, ClassNotFoundException {
 	    this(arg, check(arg));
 	}
 	
-	ConstrainableFiddlerAdminProxy(GetArg arg, MethodConstraints constraints) throws IOException{
+	ConstrainableFiddlerAdminProxy(GetArg arg, MethodConstraints constraints) throws IOException, ClassNotFoundException{
 	    super(arg);
 	    methodConstraints = constraints;
 	}

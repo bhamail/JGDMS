@@ -75,7 +75,7 @@ class ParticipantHandle implements Serializable, TransactionConstants {
         this(check(preparedPart), preparedPart, crashcount, ACTIVE);
     }
     
-    ParticipantHandle(GetArg arg) throws IOException {
+    ParticipantHandle(GetArg arg) throws IOException, ClassNotFoundException {
 	this(check(arg), 
 		(TransactionParticipant) arg.get("preparedPart", null),
 		arg.get("crashcount", 0),
@@ -101,7 +101,7 @@ class ParticipantHandle implements Serializable, TransactionConstants {
 	this.prepstate = prepstate;
     }
 
-    private static boolean check(AtomicSerial.GetArg arg) throws IOException {
+    private static boolean check(AtomicSerial.GetArg arg) throws IOException, ClassNotFoundException {
 	try {
 	    return check(arg.get("preparedPart", null));
 	} catch (IllegalArgumentException ex){

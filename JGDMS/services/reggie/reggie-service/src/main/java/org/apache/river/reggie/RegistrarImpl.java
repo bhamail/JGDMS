@@ -42,9 +42,6 @@ import java.nio.ByteBuffer;
 import java.rmi.MarshalledObject;
 import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
-import net.jini.activation.arg.ActivationException;
-import net.jini.activation.arg.ActivationID;
-import net.jini.activation.arg.ActivationSystem;
 import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -70,7 +67,6 @@ import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
@@ -82,13 +78,18 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Condition;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.net.ServerSocketFactory;
 import javax.net.SocketFactory;
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
+
 import net.jini.activation.ActivationExporter;
 import net.jini.activation.ActivationGroup;
+import net.jini.activation.arg.ActivationException;
+import net.jini.activation.arg.ActivationID;
+import net.jini.activation.arg.ActivationSystem;
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import net.jini.config.ConfigurationProvider;
@@ -113,12 +114,9 @@ import net.jini.discovery.DiscoveryGroupManagement;
 import net.jini.discovery.DiscoveryLocatorManagement;
 import net.jini.discovery.DiscoveryManagement;
 import net.jini.discovery.LookupDiscoveryManager;
+import net.jini.export.CodebaseAccessor;
 import net.jini.export.Exporter;
 import net.jini.export.ProxyAccessor;
-import net.jini.lookup.ServiceAttributesAccessor;
-import net.jini.export.CodebaseAccessor;
-import net.jini.lookup.ServiceIDAccessor;
-import net.jini.lookup.ServiceProxyAccessor;
 import net.jini.id.ReferentUuid;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
@@ -128,6 +126,9 @@ import net.jini.jeri.AtomicILFactory;
 import net.jini.jeri.BasicJeriExporter;
 import net.jini.jeri.tcp.TcpServerEndpoint;
 import net.jini.lookup.JoinManager;
+import net.jini.lookup.ServiceAttributesAccessor;
+import net.jini.lookup.ServiceIDAccessor;
+import net.jini.lookup.ServiceProxyAccessor;
 import net.jini.lookup.entry.ServiceInfo;
 import net.jini.security.BasicProxyPreparer;
 import net.jini.security.ProxyPreparer;
@@ -158,6 +159,24 @@ import org.apache.river.logging.Levels;
 import org.apache.river.lookup.entry.BasicServiceType;
 import org.apache.river.proxy.CodebaseProvider;
 import org.apache.river.proxy.MarshalledWrapper;
+import org.apache.river.reggie.proxy.AdminProxy;
+import org.apache.river.reggie.proxy.ConstrainableRegistrarEvent;
+import org.apache.river.reggie.proxy.EntryClass;
+import org.apache.river.reggie.proxy.EntryClassBase;
+import org.apache.river.reggie.proxy.EntryRep;
+import org.apache.river.reggie.proxy.EventLease;
+import org.apache.river.reggie.proxy.Item;
+import org.apache.river.reggie.proxy.Matches;
+import org.apache.river.reggie.proxy.ProxyVerifier;
+import org.apache.river.reggie.proxy.Registrar;
+import org.apache.river.reggie.proxy.RegistrarProxy;
+import org.apache.river.reggie.proxy.Registration;
+import org.apache.river.reggie.proxy.RenewResults;
+import org.apache.river.reggie.proxy.ServiceLease;
+import org.apache.river.reggie.proxy.ServiceType;
+import org.apache.river.reggie.proxy.ServiceTypeBase;
+import org.apache.river.reggie.proxy.Template;
+import org.apache.river.reggie.proxy.Util;
 import org.apache.river.reliableLog.LogHandler;
 import org.apache.river.reliableLog.ReliableLog;
 import org.apache.river.start.lifecycle.LifeCycle;
@@ -167,7 +186,6 @@ import org.apache.river.thread.NamedThreadFactory;
 import org.apache.river.thread.ReadersWriter;
 import org.apache.river.thread.ReadersWriter.ConcurrentLockException;
 import org.apache.river.thread.SynchronousExecutors;
-import org.apache.river.reggie.proxy.*;
 
 /**
  * Base server-side implementation of a lookup service, subclassed by
@@ -702,7 +720,7 @@ class RegistrarImpl implements Registrar, ProxyAccessor, ServerProxyTrust, Start
 	 */
 	public volatile long leaseExpiration;
 
-	public SvcReg(GetArg arg) throws IOException{
+	public SvcReg(GetArg arg) throws IOException, ClassNotFoundException{
 	    this( (Item) arg.get("item", null),
 		(Uuid) arg.get("leaseID", null),
 		arg.get("leaseExpiration", 0L)

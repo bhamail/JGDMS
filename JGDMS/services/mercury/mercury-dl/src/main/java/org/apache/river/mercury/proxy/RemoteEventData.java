@@ -17,15 +17,16 @@
  */
 package org.apache.river.mercury.proxy;
 
-import org.apache.river.proxy.MarshalledWrapper;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+
 import net.jini.core.event.RemoteEvent;
 import net.jini.io.MarshalledInstance;
 import org.apache.river.api.io.AtomicSerial;
 import org.apache.river.api.io.AtomicSerial.GetArg;
+import org.apache.river.proxy.MarshalledWrapper;
 
 /**
  * Simple struct to hold a <code>RemoteEvent</code> and its associated 
@@ -61,7 +62,7 @@ public class RemoteEventData implements Serializable {
         this(convert(re), cookie);
     }
     
-    RemoteEventData(GetArg arg) throws IOException {
+    RemoteEventData(GetArg arg) throws IOException, ClassNotFoundException {
 	this(check(arg), arg.get("cookie", null));
 	// get value for integrity flag
 	integrity = MarshalledWrapper.integrityEnforced(arg);
@@ -82,7 +83,7 @@ public class RemoteEventData implements Serializable {
 	return mi;
     }
     
-    private static MarshalledInstance check(GetArg arg) throws IOException {
+    private static MarshalledInstance check(GetArg arg) throws IOException, ClassNotFoundException {
 	MarshalledInstance mi = (MarshalledInstance) arg.get("mi", null);
 	Object cookie = arg.get("cookie", null);
 	if (cookie == null) 

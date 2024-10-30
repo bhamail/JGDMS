@@ -17,13 +17,12 @@
  */
 package org.apache.river.outrigger.proxy;
 
-import org.apache.river.admin.DestroyAdmin;
-import org.apache.river.proxy.ConstrainableProxyUtil;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 import java.rmi.RemoteException;
+
 import net.jini.admin.JoinAdmin;
 import net.jini.core.constraint.MethodConstraints;
 import net.jini.core.constraint.RemoteMethodControl;
@@ -34,10 +33,12 @@ import net.jini.core.transaction.TransactionException;
 import net.jini.id.Uuid;
 import net.jini.security.proxytrust.ProxyTrustIterator;
 import net.jini.security.proxytrust.SingletonProxyTrustIterator;
+import org.apache.river.admin.AdminIterator;
+import org.apache.river.admin.DestroyAdmin;
+import org.apache.river.admin.JavaSpaceAdmin;
 import org.apache.river.api.io.AtomicSerial;
 import org.apache.river.api.io.AtomicSerial.GetArg;
-import org.apache.river.admin.AdminIterator;
-import org.apache.river.admin.JavaSpaceAdmin;
+import org.apache.river.proxy.ConstrainableProxyUtil;
 
 /**
  * Constrainable subclass of <code>AdminProxy</code>
@@ -174,16 +175,16 @@ public final class ConstrainableAdminProxy extends AdminProxy
 	this.methodConstraints = methodConstraints;
     }
 
-    ConstrainableAdminProxy(GetArg arg)throws IOException {
+    ConstrainableAdminProxy(GetArg arg)throws IOException, ClassNotFoundException {
 	this(arg, check(arg));
     }
     
-    ConstrainableAdminProxy(GetArg arg, MethodConstraints constraints) throws IOException{
+    ConstrainableAdminProxy(GetArg arg, MethodConstraints constraints) throws IOException, ClassNotFoundException{
 	super(arg);
 	methodConstraints = constraints;
     }
     
-    private static MethodConstraints check(GetArg arg) throws IOException {
+    private static MethodConstraints check(GetArg arg) throws IOException, ClassNotFoundException {
 	AdminProxy ap = new AdminProxy(arg);
 	MethodConstraints methodConstraints = (MethodConstraints) 
 		arg.get("methodConstraints", null);

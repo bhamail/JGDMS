@@ -452,7 +452,7 @@ public @interface AtomicSerial {
 	public abstract GetArg validateInvariants(  String[] fields, 
 						    Class[] types,
 						    boolean[] nonNull) 
-							throws IOException;	  
+							throws IOException, ClassNotFoundException;
 	
 	}
     

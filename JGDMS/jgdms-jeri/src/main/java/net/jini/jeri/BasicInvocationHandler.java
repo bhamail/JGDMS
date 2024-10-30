@@ -51,6 +51,7 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+
 import net.jini.core.constraint.AtomicInputValidation;
 import net.jini.core.constraint.Integrity;
 import net.jini.core.constraint.InvocationConstraint;
@@ -63,7 +64,6 @@ import net.jini.io.UnsupportedConstraintException;
 import net.jini.io.context.AtomicValidationEnforcement;
 import net.jini.io.context.IntegrityEnforcement;
 import net.jini.security.proxytrust.TrustEquivalence;
-import org.apache.river.action.GetBooleanAction;
 import org.apache.river.api.io.AtomicSerial;
 import org.apache.river.api.io.AtomicSerial.GetArg;
 import org.apache.river.api.io.AtomicSerial.PutArg;
@@ -250,7 +250,7 @@ public class BasicInvocationHandler
 	return true;
     }
     
-    private static boolean check(GetArg arg) throws IOException{
+    private static boolean check(GetArg arg) throws IOException, ClassNotFoundException{
 	ObjectEndpoint oe = (ObjectEndpoint) arg.get("oe", null);
 	if (oe == null) throw new InvalidObjectException("null object endpoint");
 	Object clientConstraints = arg.get("clientConstraints", null);
@@ -264,7 +264,7 @@ public class BasicInvocationHandler
 	return true;
     }
     
-    public BasicInvocationHandler(GetArg arg) throws IOException {
+    public BasicInvocationHandler(GetArg arg) throws IOException, ClassNotFoundException {
 	this(check(arg),
 	    (ObjectEndpoint) arg.get("oe", null),
 	    (MethodConstraints) arg.get("clientConstraints", null),

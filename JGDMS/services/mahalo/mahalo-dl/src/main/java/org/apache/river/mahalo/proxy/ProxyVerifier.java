@@ -18,14 +18,12 @@
 
 package org.apache.river.mahalo.proxy;
 
-import org.apache.river.landlord.ConstrainableLandlordLease;
-import org.apache.river.landlord.Landlord;
-import org.apache.river.landlord.LandlordProxyVerifier;
 import java.io.IOException;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import net.jini.core.constraint.MethodConstraints;
 import net.jini.core.constraint.RemoteMethodControl;
 import net.jini.id.ReferentUuid;
@@ -34,6 +32,9 @@ import net.jini.security.TrustVerifier;
 import net.jini.security.proxytrust.TrustEquivalence;
 import org.apache.river.api.io.AtomicSerial;
 import org.apache.river.api.io.AtomicSerial.GetArg;
+import org.apache.river.landlord.ConstrainableLandlordLease;
+import org.apache.river.landlord.Landlord;
+import org.apache.river.landlord.LandlordProxyVerifier;
 
 /** Defines a trust verifier for the smart proxies of a Mahalo server. */
 @AtomicSerial
@@ -70,7 +71,7 @@ public final class ProxyVerifier implements TrustVerifier, Serializable {
 	this(check(serverProxy, proxyID), serverProxy, proxyID);
     }
     
-    ProxyVerifier(GetArg arg) throws IOException{
+    ProxyVerifier(GetArg arg) throws IOException, ClassNotFoundException{
 	this((TxnManager) arg.get("serverProxy", null),
 		(Uuid) arg.get("proxyID", null));
     }

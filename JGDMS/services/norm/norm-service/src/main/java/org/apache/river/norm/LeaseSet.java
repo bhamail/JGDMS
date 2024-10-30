@@ -17,12 +17,6 @@
  */
 package org.apache.river.norm;
 
-import org.apache.river.landlord.LeasedResource;
-import org.apache.river.norm.event.EventFactory;
-import org.apache.river.norm.event.EventType;
-import org.apache.river.norm.event.EventTypeGenerator;
-import org.apache.river.norm.event.SendMonitor;
-import org.apache.river.norm.proxy.*;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
@@ -35,11 +29,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
 import net.jini.core.event.EventRegistration;
 import net.jini.core.event.RemoteEvent;
 import net.jini.core.event.RemoteEventListener;
 import net.jini.core.lease.Lease;
-import net.jini.export.ProxyAccessor;
 import net.jini.id.Uuid;
 import net.jini.io.MarshalledInstance;
 import net.jini.lease.ExpirationWarningEvent;
@@ -47,6 +41,14 @@ import net.jini.lease.LeaseRenewalSet;
 import net.jini.security.ProxyPreparer;
 import org.apache.river.api.io.AtomicSerial;
 import org.apache.river.api.io.AtomicSerial.GetArg;
+import org.apache.river.landlord.LeasedResource;
+import org.apache.river.norm.event.EventFactory;
+import org.apache.river.norm.event.EventType;
+import org.apache.river.norm.event.EventTypeGenerator;
+import org.apache.river.norm.event.SendMonitor;
+import org.apache.river.norm.proxy.NormServer;
+import org.apache.river.norm.proxy.SetProxy;
+import org.apache.river.norm.proxy.StoreException;
 
 /**
  * Norm's internal representation of LeaseRenewalSets.  Unless otherwise
@@ -167,7 +169,7 @@ class LeaseSet implements Serializable, LeasedResource {
 	}
     }
 
-    LeaseSet(GetArg arg) throws IOException {
+    LeaseSet(GetArg arg) throws IOException, ClassNotFoundException {
 	this(	arg.get("expiration", 0L),
 		(Uuid) arg.get("ID", null),
 		check((Set<ClientLeaseWrapper>) arg.get("leases", null)),

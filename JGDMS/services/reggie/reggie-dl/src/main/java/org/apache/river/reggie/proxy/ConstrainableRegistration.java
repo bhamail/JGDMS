@@ -17,10 +17,10 @@
  */
 package org.apache.river.reggie.proxy;
 
-import org.apache.river.proxy.ConstrainableProxyUtil;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+
 import net.jini.core.constraint.MethodConstraints;
 import net.jini.core.constraint.RemoteMethodControl;
 import net.jini.security.proxytrust.ProxyTrustIterator;
@@ -29,6 +29,7 @@ import org.apache.river.api.io.AtomicSerial;
 import org.apache.river.api.io.AtomicSerial.GetArg;
 import org.apache.river.api.io.AtomicSerial.PutArg;
 import org.apache.river.api.io.AtomicSerial.SerialForm;
+import org.apache.river.proxy.ConstrainableProxyUtil;
 
 /**
  * Registration subclass that supports constraints.
@@ -58,7 +59,7 @@ public final class ConstrainableRegistration
     /** Client constraints for this proxy, or null */
     private final MethodConstraints constraints;
 
-    private static MethodConstraints check(GetArg arg) throws IOException {
+    private static MethodConstraints check(GetArg arg) throws IOException, ClassNotFoundException {
 	MethodConstraints constraints = (MethodConstraints) arg.get("constraints", null);
 	Registration reg = new Registration(arg);
 	MethodConstraints proxyCon = null;
@@ -73,11 +74,11 @@ public final class ConstrainableRegistration
 	return constraints;
     }
    
-    ConstrainableRegistration(GetArg arg) throws IOException {
+    ConstrainableRegistration(GetArg arg) throws IOException, ClassNotFoundException {
 	this(arg, check(arg));
     }
     
-    ConstrainableRegistration(GetArg arg, MethodConstraints constraints) throws IOException{
+    ConstrainableRegistration(GetArg arg, MethodConstraints constraints) throws IOException, ClassNotFoundException{
 	super(arg);
 	this.constraints = constraints;
     }

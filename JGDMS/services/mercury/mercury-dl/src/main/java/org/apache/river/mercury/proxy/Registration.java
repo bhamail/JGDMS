@@ -17,9 +17,6 @@
  */
 package org.apache.river.mercury.proxy;
 
-import org.apache.river.landlord.ConstrainableLandlordLease;
-import org.apache.river.proxy.ConstrainableProxyUtil;
-import org.apache.river.proxy.ThrowThis;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
@@ -28,6 +25,7 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.rmi.RemoteException;
 import java.util.Collection;
+
 import net.jini.core.constraint.MethodConstraints;
 import net.jini.core.constraint.RemoteMethodControl;
 import net.jini.core.event.RemoteEventListener;
@@ -43,6 +41,9 @@ import net.jini.security.proxytrust.ProxyTrustIterator;
 import net.jini.security.proxytrust.SingletonProxyTrustIterator;
 import org.apache.river.api.io.AtomicSerial;
 import org.apache.river.api.io.AtomicSerial.GetArg;
+import org.apache.river.landlord.ConstrainableLandlordLease;
+import org.apache.river.proxy.ConstrainableProxyUtil;
+import org.apache.river.proxy.ThrowThis;
 
 /**
  * The <tt>Registration</tt> class is the client-side proxy
@@ -100,7 +101,7 @@ public class Registration implements MailboxPullRegistration,
         lease = l;
     }
 
-    Registration(GetArg arg) throws IOException {
+    Registration(GetArg arg) throws IOException, ClassNotFoundException {
 	this(check(arg),
 		(MailboxBackEnd) arg.get("mailbox", null),
 		(ListenerProxy) arg.get("listener", null),
@@ -108,7 +109,7 @@ public class Registration implements MailboxPullRegistration,
 		);
     }
     
-    private static Uuid check(GetArg arg) throws IOException {
+    private static Uuid check(GetArg arg) throws IOException, ClassNotFoundException {
 	Uuid registrationID = (Uuid) arg.get("registrationID", null);
 	MailboxBackEnd mailbox = (MailboxBackEnd) arg.get("mailbox", null);
 	ListenerProxy listener = (ListenerProxy) arg.get("listener", null);
@@ -337,16 +338,16 @@ public class Registration implements MailboxPullRegistration,
 	    this.methodConstraints = methodConstraints;
 	}
 	
-	ConstrainableRegistration(GetArg arg) throws IOException {
+	ConstrainableRegistration(GetArg arg) throws IOException, ClassNotFoundException {
 	    this(arg, check(arg));
 	}
 	
-	ConstrainableRegistration(GetArg arg, MethodConstraints constraints) throws IOException{
+	ConstrainableRegistration(GetArg arg, MethodConstraints constraints) throws IOException, ClassNotFoundException{
 	    super(arg);
 	    methodConstraints = constraints;
 	}
 	
-	private static MethodConstraints check(GetArg arg) throws IOException {
+	private static MethodConstraints check(GetArg arg) throws IOException, ClassNotFoundException {
 	    Registration r = new Registration(arg);
 	    MethodConstraints methodConstraints = (MethodConstraints) 
 		    arg.get("methodConstraints", null);

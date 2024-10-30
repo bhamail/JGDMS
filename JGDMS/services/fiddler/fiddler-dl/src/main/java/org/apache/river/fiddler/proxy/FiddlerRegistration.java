@@ -17,8 +17,6 @@
  */
 package org.apache.river.fiddler.proxy;
 
-import org.apache.river.proxy.ConstrainableProxyUtil;
-import org.apache.river.proxy.ThrowThis;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
@@ -28,6 +26,7 @@ import java.rmi.MarshalledObject;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashSet;
+
 import net.jini.core.constraint.MethodConstraints;
 import net.jini.core.constraint.RemoteMethodControl;
 import net.jini.core.discovery.LookupLocator;
@@ -44,6 +43,8 @@ import net.jini.security.proxytrust.ProxyTrustIterator;
 import net.jini.security.proxytrust.SingletonProxyTrustIterator;
 import org.apache.river.api.io.AtomicSerial;
 import org.apache.river.api.io.AtomicSerial.GetArg;
+import org.apache.river.proxy.ConstrainableProxyUtil;
+import org.apache.river.proxy.ThrowThis;
 
 /**
  * This class is an implementation of the LookupDiscoveryRegistration
@@ -171,7 +172,7 @@ public class FiddlerRegistration implements LookupDiscoveryRegistration,
 	this.eventReg       = eventReg;
     }//end constructor
 
-    FiddlerRegistration(GetArg arg) throws IOException {
+    FiddlerRegistration(GetArg arg) throws IOException, ClassNotFoundException {
 	this(check((Fiddler) arg.get("server", null),
 		   (Uuid) arg.get("registrationID", null),
 		   (EventRegistration) arg.get("eventReg", null)),
@@ -1275,7 +1276,7 @@ public class FiddlerRegistration implements LookupDiscoveryRegistration,
 	    this(arg, check(arg));
 	}
 	
-	ConstrainableFiddlerRegistration(GetArg arg, MethodConstraints constraints) throws IOException{
+	ConstrainableFiddlerRegistration(GetArg arg, MethodConstraints constraints) throws IOException, ClassNotFoundException{
 	    super(arg);
 	    this.methodConstraints = constraints;
 	}

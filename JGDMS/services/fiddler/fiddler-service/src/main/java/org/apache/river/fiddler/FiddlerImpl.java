@@ -30,9 +30,6 @@ import java.net.InetAddress;
 import java.rmi.MarshalledObject;
 import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
-import net.jini.activation.arg.ActivationException;
-import net.jini.activation.arg.ActivationID;
-import net.jini.activation.arg.ActivationSystem;
 import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -54,15 +51,19 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
+
 import net.jini.activation.ActivationGroup;
+import net.jini.activation.arg.ActivationException;
+import net.jini.activation.arg.ActivationID;
+import net.jini.activation.arg.ActivationSystem;
 import net.jini.config.Configuration;
 import net.jini.config.ConfigurationException;
 import net.jini.config.ConfigurationProvider;
 import net.jini.core.discovery.LookupLocator;
-import net.jini.core.entry.CloneableEntry;
 import net.jini.core.entry.Entry;
 import net.jini.core.event.EventRegistration;
 import net.jini.core.event.RemoteEventListener;
@@ -81,13 +82,13 @@ import net.jini.discovery.RemoteDiscoveryEvent;
 import net.jini.export.CodebaseAccessor;
 import net.jini.export.Exporter;
 import net.jini.export.ProxyAccessor;
-import net.jini.lookup.ServiceAttributesAccessor;
-import net.jini.lookup.ServiceIDAccessor;
-import net.jini.lookup.ServiceProxyAccessor;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 import net.jini.io.MarshalledInstance;
 import net.jini.lookup.JoinManager;
+import net.jini.lookup.ServiceAttributesAccessor;
+import net.jini.lookup.ServiceIDAccessor;
+import net.jini.lookup.ServiceProxyAccessor;
 import net.jini.lookup.entry.Comment;
 import net.jini.lookup.entry.ServiceInfo;
 import net.jini.lookup.entry.Status;
@@ -108,9 +109,17 @@ import org.apache.river.config.Config;
 import org.apache.river.constants.ThrowableConstants;
 import org.apache.river.constants.TimeConstants;
 import org.apache.river.constants.VersionConstants;
+import org.apache.river.fiddler.proxy.Fiddler;
+import org.apache.river.fiddler.proxy.FiddlerAdminProxy;
+import org.apache.river.fiddler.proxy.FiddlerLease;
+import org.apache.river.fiddler.proxy.FiddlerProxy;
+import org.apache.river.fiddler.proxy.FiddlerRegistration;
+import org.apache.river.fiddler.proxy.FiddlerRenewResults;
+import org.apache.river.fiddler.proxy.ProxyVerifier;
 import org.apache.river.logging.Levels;
 import org.apache.river.lookup.entry.BasicServiceType;
 import org.apache.river.lookup.entry.LookupAttributes;
+import org.apache.river.proxy.CodebaseProvider;
 import org.apache.river.proxy.ThrowThis;
 import org.apache.river.reliableLog.LogHandler;
 import org.apache.river.reliableLog.ReliableLog;
@@ -119,8 +128,6 @@ import org.apache.river.thread.InterruptedStatusThread;
 import org.apache.river.thread.ReadersWriter;
 import org.apache.river.thread.ReadersWriter.ConcurrentLockException;
 import org.apache.river.thread.ReadyState;
-import org.apache.river.fiddler.proxy.*;
-import org.apache.river.proxy.CodebaseProvider;
 
 /**
  * This class is the server side of an implementation of the lookup
@@ -700,7 +707,7 @@ public class FiddlerImpl implements ServerProxyTrust, ProxyAccessor, Fiddler,
          */
          public transient RemoteEventListener listener;
          
-	 private static RemoteEventListener check(GetArg arg) throws IOException {
+	 private static RemoteEventListener check(GetArg arg) throws IOException, ClassNotFoundException {
 	    Object registrationID = arg.get("registrationID", null);
 	    if (!(registrationID instanceof Uuid)) 
 		throw new InvalidObjectException(
@@ -737,11 +744,11 @@ public class FiddlerImpl implements ServerProxyTrust, ProxyAccessor, Fiddler,
 	    return ((RO)arg.getReader()).listener;
 	 }
 	 
-	 RegistrationInfo(GetArg arg) throws IOException {
+	 RegistrationInfo(GetArg arg) throws IOException, ClassNotFoundException {
 	     this(arg, check(arg));
 	 }
 	 
-	private RegistrationInfo(GetArg arg, RemoteEventListener listener) throws IOException {
+	private RegistrationInfo(GetArg arg, RemoteEventListener listener) throws IOException, ClassNotFoundException {
 	    this.listener = listener;
 	    registrationID = (Uuid) arg.get("registrationID", null);
 	    discoveredRegsMap = new HashMap<ServiceRegistrar, MarshalledObject>(

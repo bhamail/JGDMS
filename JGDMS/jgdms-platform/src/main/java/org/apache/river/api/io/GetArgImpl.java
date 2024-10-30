@@ -119,7 +119,7 @@ class GetArgImpl extends AtomicSerial.GetArg {
     }
 
     @Override
-    public Object get(String name, Object val) throws IOException {
+    public Object get(String name, Object val) throws IOException, ClassNotFoundException {
 	ObjectInputStream.GetField fields = classFields.get(CONTEXT.caller());
 	return fields != null ? fields.get(name, val) : val;
     }
@@ -187,7 +187,7 @@ class GetArgImpl extends AtomicSerial.GetArg {
      * @throws IllegalArgumentException if array lengths are not equal.
      */
     @Override
-    public AtomicSerial.GetArg validateInvariants(String[] fields, Class[] types, boolean[] nonNull) throws IOException {
+    public AtomicSerial.GetArg validateInvariants(String[] fields, Class[] types, boolean[] nonNull) throws IOException, ClassNotFoundException {
 	Class caller = CONTEXT.caller();
 	if (fields == null || types == null || nonNull == null) 
 	    throw new NullPointerException("null arguments not allowed");

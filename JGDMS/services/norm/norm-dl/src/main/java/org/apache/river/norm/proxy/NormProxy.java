@@ -21,10 +21,10 @@ import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.rmi.RemoteException;
+
 import net.jini.admin.Administrable;
 import net.jini.core.constraint.MethodConstraints;
 import net.jini.core.constraint.RemoteMethodControl;
-import net.jini.export.ProxyAccessor;
 import net.jini.id.Uuid;
 import net.jini.lease.LeaseRenewalService;
 import net.jini.lease.LeaseRenewalSet;
@@ -65,7 +65,7 @@ public class NormProxy extends AbstractProxy
 	super(server, serverUuid);
     }
 
-    NormProxy(GetArg arg) throws IOException {
+    NormProxy(GetArg arg) throws IOException, ClassNotFoundException {
 	super(arg);
     }
 
@@ -107,11 +107,11 @@ public class NormProxy extends AbstractProxy
 	    }
 	}
 
-	ConstrainableNormProxy(GetArg arg) throws IOException {
+	ConstrainableNormProxy(GetArg arg) throws IOException, ClassNotFoundException {
 	    super(check(arg));
 	}
 	
-	private static GetArg check(GetArg arg) throws IOException {
+	private static GetArg check(GetArg arg) throws IOException, ClassNotFoundException {
 	    NormProxy np = new NormProxy(arg);
 	    if (!(np.server instanceof RemoteMethodControl)) {
 		throw new InvalidObjectException(

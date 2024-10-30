@@ -17,11 +17,11 @@
  */
 package org.apache.river.norm.proxy;
 
-import org.apache.river.admin.DestroyAdmin;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.rmi.RemoteException;
+
 import net.jini.admin.JoinAdmin;
 import net.jini.core.constraint.MethodConstraints;
 import net.jini.core.constraint.RemoteMethodControl;
@@ -30,6 +30,7 @@ import net.jini.core.entry.Entry;
 import net.jini.id.Uuid;
 import net.jini.security.proxytrust.ProxyTrustIterator;
 import net.jini.security.proxytrust.SingletonProxyTrustIterator;
+import org.apache.river.admin.DestroyAdmin;
 import org.apache.river.api.io.AtomicSerial;
 import org.apache.river.api.io.AtomicSerial.GetArg;
 
@@ -60,7 +61,7 @@ public class AdminProxy extends AbstractProxy implements JoinAdmin, DestroyAdmin
 	super(server, serverUuid);
     }
 
-    AdminProxy(GetArg arg) throws IOException {
+    AdminProxy(GetArg arg) throws IOException, ClassNotFoundException {
 	super(arg);
     }
 
@@ -159,11 +160,11 @@ public class AdminProxy extends AbstractProxy implements JoinAdmin, DestroyAdmin
 	    }
 	}
 
-	ConstrainableAdminProxy(GetArg arg) throws IOException {
+	ConstrainableAdminProxy(GetArg arg) throws IOException, ClassNotFoundException {
 	    super(check(arg));
 	}
 	
-	private static GetArg check(GetArg arg) throws IOException {
+	private static GetArg check(GetArg arg) throws IOException, ClassNotFoundException {
 	    AbstractProxy ap = new AbstractProxy(arg){};
 	    if (!(ap.server instanceof RemoteMethodControl)) {
 		    throw new InvalidObjectException(

@@ -23,6 +23,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.rmi.RemoteException;
+
 import net.jini.admin.Administrable;
 import net.jini.core.constraint.MethodConstraints;
 import net.jini.core.constraint.RemoteMethodControl;
@@ -34,7 +35,6 @@ import net.jini.core.transaction.TimeoutExpiredException;
 import net.jini.core.transaction.UnknownTransactionException;
 import net.jini.core.transaction.server.CrashCountException;
 import net.jini.core.transaction.server.TransactionManager;
-import net.jini.core.transaction.server.TransactionManager.Created;
 import net.jini.core.transaction.server.TransactionParticipant;
 import net.jini.export.ProxyAccessor;
 import net.jini.id.ReferentUuid;
@@ -109,7 +109,7 @@ public class TxnMgrProxy implements TransactionManager, Administrable, Serializa
 	 return txnMgr;
     }
     
-    private static TxnManager check(GetArg arg) throws IOException {
+    private static TxnManager check(GetArg arg) throws IOException, ClassNotFoundException {
 	try {
 	    return check((TxnManager) arg.get("backend", null),
 		    (Uuid) arg.get("proxyID", null));

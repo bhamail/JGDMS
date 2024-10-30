@@ -112,7 +112,7 @@ public final class EventRegistration implements java.io.Serializable {
      */
     private final long seqNum;
 
-    private static boolean check(GetArg arg) throws IOException{
+    private static boolean check(GetArg arg) throws IOException, ClassNotFoundException{
 	arg.get("eventID", 0L);
 	Object source = arg.get("source", null);
 	if (source == null) throw new InvalidObjectException("source cannot be null");
@@ -124,7 +124,7 @@ public final class EventRegistration implements java.io.Serializable {
 	return true;
     }
     
-    private EventRegistration(boolean check, GetArg arg) throws IOException{
+    private EventRegistration(boolean check, GetArg arg) throws IOException, ClassNotFoundException{
 	eventID = arg.get("eventID", 0L);
 	source = arg.get("source", null);
 	lease = (Lease) arg.get("lease", null);
@@ -134,11 +134,11 @@ public final class EventRegistration implements java.io.Serializable {
     /**
      * Deserialization constructor.
      * @param arg
-     * @throws IOException 
+     * @throws IOException, ClassNotFoundException
      * @since 3.1
      * @see AtomicSerial
      */
-    public EventRegistration(GetArg arg) throws IOException{
+    public EventRegistration(GetArg arg) throws IOException, ClassNotFoundException{
 	this(check(arg), arg);
     }
 

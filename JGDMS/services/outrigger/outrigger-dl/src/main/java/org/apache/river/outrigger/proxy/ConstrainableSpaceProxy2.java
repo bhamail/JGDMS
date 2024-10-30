@@ -17,13 +17,12 @@
  */
 package org.apache.river.outrigger.proxy;
 
-import org.apache.river.landlord.ConstrainableLandlordLease;
-import org.apache.river.proxy.ConstrainableProxyUtil;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.lang.reflect.Method;
 import java.rmi.MarshalledObject;
 import java.util.Collection;
+
 import net.jini.admin.Administrable;
 import net.jini.core.constraint.MethodConstraints;
 import net.jini.core.constraint.RemoteMethodControl;
@@ -39,6 +38,8 @@ import net.jini.space.JavaSpace;
 import net.jini.space.JavaSpace05;
 import org.apache.river.api.io.AtomicSerial;
 import org.apache.river.api.io.AtomicSerial.GetArg;
+import org.apache.river.landlord.ConstrainableLandlordLease;
+import org.apache.river.proxy.ConstrainableProxyUtil;
 
 /**
  * Constrainable subclass of <code>SpaceProxy2</code>
@@ -191,16 +192,16 @@ public final class ConstrainableSpaceProxy2 extends SpaceProxy2
 	this.methodConstraints = methodConstraints;
     }
 
-    ConstrainableSpaceProxy2(GetArg arg) throws IOException{
+    ConstrainableSpaceProxy2(GetArg arg) throws IOException, ClassNotFoundException{
 	this(arg, check(arg));
     }
     
-    ConstrainableSpaceProxy2(GetArg arg, MethodConstraints constraints) throws IOException{
+    ConstrainableSpaceProxy2(GetArg arg, MethodConstraints constraints) throws IOException, ClassNotFoundException{
 	super(arg);
 	methodConstraints = constraints;
     }
     
-    private static MethodConstraints check(GetArg arg) throws IOException {
+    private static MethodConstraints check(GetArg arg) throws IOException, ClassNotFoundException {
 	SpaceProxy2 sp2 = new SpaceProxy2(arg);
 	MethodConstraints methodConstraints = (MethodConstraints) 
 		arg.get("methodConstraints", null);

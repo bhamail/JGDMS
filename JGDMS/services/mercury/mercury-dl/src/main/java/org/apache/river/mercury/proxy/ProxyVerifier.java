@@ -17,15 +17,13 @@
  */
 package org.apache.river.mercury.proxy;
 
-import org.apache.river.landlord.ConstrainableLandlordLease;
-import org.apache.river.landlord.Landlord;
-import org.apache.river.landlord.LandlordProxyVerifier;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import net.jini.core.constraint.MethodConstraints;
 import net.jini.core.constraint.RemoteMethodControl;
 import net.jini.id.ReferentUuid;
@@ -34,6 +32,9 @@ import net.jini.security.TrustVerifier;
 import net.jini.security.proxytrust.TrustEquivalence;
 import org.apache.river.api.io.AtomicSerial;
 import org.apache.river.api.io.AtomicSerial.GetArg;
+import org.apache.river.landlord.ConstrainableLandlordLease;
+import org.apache.river.landlord.Landlord;
+import org.apache.river.landlord.LandlordProxyVerifier;
 
 /** Defines a trust verifier for the smart proxies of a Mercury server. */
 @AtomicSerial
@@ -78,7 +79,7 @@ public final class ProxyVerifier implements TrustVerifier, Serializable {
         this.proxyID = proxyID;
     }
     
-    ProxyVerifier(GetArg arg) throws IOException {
+    ProxyVerifier(GetArg arg) throws IOException, ClassNotFoundException {
 	this((MailboxBackEnd)arg.get("serverProxy", null),
 	    (Uuid) arg.get("proxyID", null),
 	    check(arg));
@@ -99,7 +100,7 @@ public final class ProxyVerifier implements TrustVerifier, Serializable {
 	return true;
     }
 
-    private static boolean check(GetArg arg) throws IOException {
+    private static boolean check(GetArg arg) throws IOException, ClassNotFoundException {
 	try {
 	    check((MailboxBackEnd)arg.get("serverProxy", null),(Uuid) arg.get("proxyID", null));
 	} catch (UnsupportedOperationException ex){

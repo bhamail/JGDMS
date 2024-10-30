@@ -17,15 +17,14 @@
  */
 package org.apache.river.mahalo;
 
-import org.apache.river.mahalo.log.CannotRecoverException;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import net.jini.core.transaction.server.TransactionParticipant;
 
 import org.apache.river.api.io.AtomicSerial;
 import org.apache.river.api.io.AtomicSerial.GetArg;
+import org.apache.river.mahalo.log.CannotRecoverException;
 import org.apache.river.mahalo.proxy.InternalManagerException;
 
 /**
@@ -68,7 +67,7 @@ class CommitRecord implements TxnLogRecord {
 	this(check(parts), parts);
     }
 
-    CommitRecord(AtomicSerial.GetArg arg) throws IOException {
+    CommitRecord(AtomicSerial.GetArg arg) throws IOException, ClassNotFoundException {
 	this(check(arg),
 		((ParticipantHandle[]) arg.get("parts", null)).clone());
     }
@@ -84,7 +83,7 @@ class CommitRecord implements TxnLogRecord {
 	return true;
     }
 
-    private static boolean check(GetArg arg) throws IOException {
+    private static boolean check(GetArg arg) throws IOException, ClassNotFoundException {
 	try {
 	    return check(arg.get("parts", null));
 	} catch (IllegalArgumentException ex){

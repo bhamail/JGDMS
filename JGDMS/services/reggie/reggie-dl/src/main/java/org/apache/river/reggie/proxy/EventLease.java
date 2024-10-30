@@ -86,7 +86,7 @@ public class EventLease extends RegistrarLease {
 	return arg;
     }
     
-    EventLease(GetArg arg) throws IOException{
+    EventLease(GetArg arg) throws IOException, ClassNotFoundException{
 	super(check(arg));
 	eventID = arg.get("eventID", 0L);
     }

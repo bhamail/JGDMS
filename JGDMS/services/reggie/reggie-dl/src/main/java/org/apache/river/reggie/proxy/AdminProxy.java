@@ -17,8 +17,6 @@
  */
 package org.apache.river.reggie.proxy;
 
-import org.apache.river.admin.DestroyAdmin;
-import org.apache.river.proxy.ConstrainableProxyUtil;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInput;
@@ -28,6 +26,7 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.rmi.RemoteException;
+
 import net.jini.admin.JoinAdmin;
 import net.jini.core.constraint.MethodConstraints;
 import net.jini.core.constraint.RemoteMethodControl;
@@ -39,12 +38,14 @@ import net.jini.id.ReferentUuids;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
 import net.jini.lookup.DiscoveryAdmin;
+import org.apache.river.admin.DestroyAdmin;
 import org.apache.river.api.io.AtomicSerial;
 import org.apache.river.api.io.AtomicSerial.GetArg;
 import org.apache.river.api.io.AtomicSerial.PutArg;
 import org.apache.river.api.io.AtomicSerial.ReadInput;
 import org.apache.river.api.io.AtomicSerial.ReadObject;
 import org.apache.river.api.io.AtomicSerial.SerialForm;
+import org.apache.river.proxy.ConstrainableProxyUtil;
 
 /**
  * Proxy for administering a registrar, returned from the getAdmin method of
@@ -198,18 +199,18 @@ public class AdminProxy
 	return new RO();
     }
     
-    private static boolean check(GetArg arg) throws IOException{
+    private static boolean check(GetArg arg) throws IOException, ClassNotFoundException{
 	Registrar server = (Registrar) arg.get(SERVER, null);
 	if (server == null) throw new NullPointerException();
 	if (((RO) arg.getReader()).registrarID == null) throw new NullPointerException();
 	return true;
     }
 
-    AdminProxy(GetArg arg) throws IOException{
+    AdminProxy(GetArg arg) throws IOException, ClassNotFoundException{
 	this(arg, check(arg));
     }
     
-    private AdminProxy(GetArg arg, boolean check) throws IOException {
+    private AdminProxy(GetArg arg, boolean check) throws IOException, ClassNotFoundException {
 	server = (Registrar) arg.get(SERVER, null);
 	registrarID = ((RO) arg.getReader()).registrarID;
     }

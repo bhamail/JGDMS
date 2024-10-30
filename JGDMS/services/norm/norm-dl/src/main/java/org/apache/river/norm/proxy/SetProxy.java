@@ -17,9 +17,6 @@
  */
 package org.apache.river.norm.proxy;
 
-import org.apache.river.landlord.ConstrainableLandlordLease;
-import org.apache.river.proxy.ConstrainableProxyUtil;
-import org.apache.river.proxy.ThrowThis;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
@@ -28,6 +25,7 @@ import java.rmi.MarshalledObject;
 import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
+
 import net.jini.core.constraint.MethodConstraints;
 import net.jini.core.constraint.RemoteMethodControl;
 import net.jini.core.event.EventRegistration;
@@ -41,6 +39,9 @@ import net.jini.security.proxytrust.ProxyTrustIterator;
 import net.jini.security.proxytrust.SingletonProxyTrustIterator;
 import org.apache.river.api.io.AtomicSerial;
 import org.apache.river.api.io.AtomicSerial.GetArg;
+import org.apache.river.landlord.ConstrainableLandlordLease;
+import org.apache.river.proxy.ConstrainableProxyUtil;
+import org.apache.river.proxy.ThrowThis;
 
 /**
  * Client side proxy for Norm's lease renewal sets.  Uses an object of
@@ -83,12 +84,12 @@ public class SetProxy extends AbstractProxy implements LeaseRenewalSet {
 	ourLease = lease;
     }
 
-    SetProxy(GetArg arg) throws IOException {
+    SetProxy(GetArg arg) throws IOException, ClassNotFoundException {
 	super(check(arg));
 	ourLease = (Lease) arg.get("ourLease", null);
     }
     
-    private static GetArg check(GetArg arg) throws IOException {
+    private static GetArg check(GetArg arg) throws IOException, ClassNotFoundException {
 	Lease ourLease = (Lease) arg.get("ourLease", null);
 	if (ourLease == null) {
 	    throw new InvalidObjectException("ourLease cannot be null");
